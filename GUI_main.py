@@ -2,7 +2,7 @@ import wx
 import GUI_data
 import input_data
 import wx.lib.masked.numctrl
-import re
+import diagramms
 
 BACKGROUND_COLOUR = '#696969'
 PANEL_COLOUR = '#D3D3D3'
@@ -228,6 +228,7 @@ class TypeOfDiagrammPanel(wx.Panel):
             frame.gravity_yard_panel.rb_1.Enable(False)
             frame.gravity_yard_panel.rb_2.Enable(False)
             frame.gravity_yard_panel.rb_3.Enable(False)
+        print(input_data.diagram_type)
 
 
 class RailWidth(wx.Panel):
@@ -629,11 +630,12 @@ class DataButton(wx.Button):
         self.Bind(wx.EVT_BUTTON, self.on_data_button)
 
     def on_data_button(self, event):
+        diagramms.initialize_diagram()
         data_input_dlg = GUI_data.DataInputDlg(self, title='Ввод данных для расчета')
         data_input_dlg.filter_panels()
         data_input_dlg.ShowModal()
-
         data_input_dlg.Destroy()
+
 
 
 app = wx.App()

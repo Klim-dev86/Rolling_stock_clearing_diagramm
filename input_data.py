@@ -8,6 +8,7 @@ diagram_type = 'T'
     - 'Tz',
     - 'Tpr',
     - '1-T',
+    - '1-VM',
     - '0-VM',
     - '02-VM',
     - '03-VM'

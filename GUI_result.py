@@ -12,7 +12,7 @@ class WordButton(wx.Button):
         self.Bind(wx.EVT_BUTTON, self.on_data_button)
     
     def on_data_button(self, event):
-        data_input_dlg = GUI_data.DataInputDlg(self, title = 'Ввод данных для расчета')
+        data_input_dlg = GUI_data.DataInputDlg(self, title='Ввод данных для расчета')
         res = data_input_dlg.ShowModal()
         data_input_dlg.Destroy
         # print(res)
@@ -35,7 +35,7 @@ class DXF_Button(wx.Button):
 class ResultDlg(wx.Dialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.SetSize(1000,500)
+        self.SetSize(1000, 500)
         
         RESULT = calc.main_calc()
         

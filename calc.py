@@ -587,9 +587,6 @@ def get_vert_project_position(point_number, point_height, upper_or_lower_point):
 
 
 def main_calc():
-    # reload(input_data)
-
-    # print('q_x =' + str(e_x))
 
     class Result():
         def __init__(self, number, v_c, h_c, v_b_c, v_p_c, h_b_c, h_p_c, main_or_additional):
