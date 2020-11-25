@@ -20,7 +20,8 @@ class DxfButton(wx.Button):
 
         self.Bind(wx.EVT_BUTTON, self.on_calc_button)
 
-    def on_calc_button(self, event):
+    @staticmethod
+    def on_calc_button():
         DXF_output.draw()
         DXF_output.output()
 
@@ -30,7 +31,7 @@ class MyPanel(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent)
 
-        RESULT = calc.main_calc()
+        result = calc.main_calc()
 
         self.list_ctrl = wx.ListCtrl(self, style=wx.LC_REPORT)
 
@@ -46,15 +47,15 @@ class MyPanel(wx.Panel):
             self.list_ctrl.SetColumnWidth(i, -2)
 
         index = 0
-        for i in range(len(RESULT)):
+        for i in range(len(result)):
 
-            self.list_ctrl.InsertItem(index, str(RESULT[i].number))
-            self.list_ctrl.SetItem(index, 1, str(RESULT[i].v_c))
-            self.list_ctrl.SetItem(index, 2, str(RESULT[i].v_b_c))
-            self.list_ctrl.SetItem(index, 3, str(RESULT[i].v_p_c))
-            self.list_ctrl.SetItem(index, 4, str(RESULT[i].h_c))
-            self.list_ctrl.SetItem(index, 5, str(RESULT[i].h_b_c))
-            self.list_ctrl.SetItem(index, 6, str(RESULT[i].h_p_c))
+            self.list_ctrl.InsertItem(index, str(result[i].number))
+            self.list_ctrl.SetItem(index, 1, str(result[i].v_c))
+            self.list_ctrl.SetItem(index, 2, str(result[i].v_b_c))
+            self.list_ctrl.SetItem(index, 3, str(result[i].v_p_c))
+            self.list_ctrl.SetItem(index, 4, str(result[i].h_c))
+            self.list_ctrl.SetItem(index, 5, str(result[i].h_b_c))
+            self.list_ctrl.SetItem(index, 6, str(result[i].h_p_c))
 
             if index % 2:
                 self.list_ctrl.SetItemBackgroundColour(index, "white")
@@ -80,4 +81,3 @@ class ResultDlg(wx.Dialog):
         self.SetSize(870, 700)
 
         panel = MyPanel(self)
-

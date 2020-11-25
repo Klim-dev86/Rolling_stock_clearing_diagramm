@@ -581,6 +581,32 @@ def get_vert_project_position(point_number, point_height, upper_or_lower_point):
     return H_proj
 
 
+class Result():
+    def __init__(self,
+                 number,
+                 initial_vertical_coord,
+                 initial_horizontal_coord,
+                 build_vertical_coord,
+                 project_vertical_coord,
+                 build_horizontal_coord,
+                 project_horizontal_coord,
+                 main_or_additional
+                 ):
+
+        self.number = number
+        # Изначальные координаты точки
+        self.v_c = initial_vertical_coord
+        self.h_c = initial_horizontal_coord
+        # Строительные координаты точки
+        self.v_b_c = build_vertical_coord
+        self.h_b_c = build_horizontal_coord
+        # Проектные координаты точки
+        self.v_p_c = project_vertical_coord
+        self.h_p_c = project_horizontal_coord
+        # Основная или дополнительная точка
+        self.main_or_additional = main_or_additional
+
+
 #######################################
 # Окончательные  вычисления #
 #######################################
@@ -588,34 +614,11 @@ def get_vert_project_position(point_number, point_height, upper_or_lower_point):
 
 def main_calc():
 
-    class Result():
-        def __init__(self, number, v_c, h_c, v_b_c, v_p_c, h_b_c, h_p_c, main_or_additional):
-            self.number = number
-
-            # Изначальные координаты точки
-
-            self.v_c = v_c
-            self.h_c = h_c
-
-            # Строительные координаты точки
-
-            self.v_b_c = v_b_c
-            self.h_b_c = h_b_c
-
-            # Проектные координаты точки
-
-            self.v_p_c = v_p_c
-            self.h_p_c = h_p_c
-
-            # Основная или дополнительная точка
-
-            self.main_or_additional = main_or_additional
-
     result_array = []
 
-    DIAGRAMM = diagramms.diagram
+    diagram = diagramms.diagram
 
-    for point in DIAGRAMM:
+    for point in diagram:
         vert_build_coord = get_vert_build_position(point.height, point.upper_or_lower)
 
         horizontal_build_coord = get_horizont_build_position(point.width, point.upper_or_lower, point.number)
@@ -624,13 +627,18 @@ def main_calc():
 
         horizontal_project_coord = get_horizont_project_position(point.width, point.upper_or_lower, point.number)
 
-        result_array.append(Result(point.number, point.height, point.width, vert_build_coord, vert_project_coord,
-                                   horizontal_build_coord, horizontal_project_coord, point.main_or_additional))
+        result_array.append(Result(number=point.number,
+                                   initial_vertical_coord=point.height,
+                                   initial_horizontal_coord=point.width,
+                                   build_vertical_coord=vert_build_coord,
+                                   project_vertical_coord=vert_project_coord,
+                                   build_horizontal_coord=horizontal_build_coord,
+                                   project_horizontal_coord=horizontal_project_coord,
+                                   main_or_additional=point.main_or_additional)
+                            )
 
     return result_array
 
-
-RESULT = main_calc()
 
 if __name__ == "__main__":
 
