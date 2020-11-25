@@ -1,98 +1,83 @@
 import wx
 import calc
-import input_data
+# import input_data
 import DXF_output
 
 
-
-class WordButton(wx.Button):
+class DocxButton(wx.Button):
     def __init__(self, parent, label, size):
         super().__init__(parent, label=label, size=size)
 
         self.Bind(wx.EVT_BUTTON, self.on_data_button)
-    
+
     def on_data_button(self, event):
-        data_input_dlg = GUI_data.DataInputDlg(self, title='Ввод данных для расчета')
-        res = data_input_dlg.ShowModal()
-        data_input_dlg.Destroy
-        # print(res)
+        pass
 
 
-class DXF_Button(wx.Button):
+class DxfButton(wx.Button):
     def __init__(self, parent, label, size):
         super().__init__(parent, label=label, size=size)
 
         self.Bind(wx.EVT_BUTTON, self.on_calc_button)
-    
+
     def on_calc_button(self, event):
         DXF_output.draw()
         DXF_output.output()
-        
-        
 
+
+class MyPanel(wx.Panel):
+    def __init__(self, parent):
+        """Constructor"""
+        wx.Panel.__init__(self, parent)
+
+        RESULT = calc.main_calc()
+
+        self.list_ctrl = wx.ListCtrl(self, style=wx.LC_REPORT)
+
+        self.list_ctrl.InsertColumn(0, "Номер точки")
+        self.list_ctrl.InsertColumn(1, "Исходная высота")
+        self.list_ctrl.InsertColumn(2, "Строительная высота")
+        self.list_ctrl.InsertColumn(3, "Проектная высота")
+        self.list_ctrl.InsertColumn(4, "Исходная ширина")
+        self.list_ctrl.InsertColumn(5, "Строительная ширина")
+        self.list_ctrl.InsertColumn(6, "Проектная ширина")
+
+        for i in range(7):
+            self.list_ctrl.SetColumnWidth(i, -2)
+
+        index = 0
+        for i in range(len(RESULT)):
+
+            self.list_ctrl.InsertItem(index, str(RESULT[i].number))
+            self.list_ctrl.SetItem(index, 1, str(RESULT[i].v_c))
+            self.list_ctrl.SetItem(index, 2, str(RESULT[i].v_b_c))
+            self.list_ctrl.SetItem(index, 3, str(RESULT[i].v_p_c))
+            self.list_ctrl.SetItem(index, 4, str(RESULT[i].h_c))
+            self.list_ctrl.SetItem(index, 5, str(RESULT[i].h_b_c))
+            self.list_ctrl.SetItem(index, 6, str(RESULT[i].h_p_c))
+
+            if index % 2:
+                self.list_ctrl.SetItemBackgroundColour(index, "white")
+            else:
+                self.list_ctrl.SetItemBackgroundColour(index, "#fffacd")
+            index += 1
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.list_ctrl, 1, wx.ALL | wx.EXPAND, 5)
+
+        self.dxf_btn = DxfButton(self, label='Экспортировать очертание в DXF файл', size=(300, 30))
+        sizer.Add(self.dxf_btn, 0, wx.ALL, 5)
+
+        self.dox_btn = DocxButton(self, label='Экспортировать таблицу в Word файл', size=(300, 30))
+        sizer.Add(self.dox_btn, 0, wx.ALL, 5)
+
+        self.SetSizer(sizer)
 
 
 class ResultDlg(wx.Dialog):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.SetSize(1000, 500)
-        
-        RESULT = calc.main_calc()
-        
-        panel = wx.Panel(self)
-        panel.SetBackgroundColour('#696969')
+        self.SetSize(870, 700)
 
-        main_vertical_sizer = wx.BoxSizer(wx.VERTICAL)
-
-        number_of_points = len(RESULT) + 1
-
-        gs = wx.GridSizer(number_of_points, 7, 5, 5)
-
-        
-
-        gs.Add(wx.StaticText(panel, label = "Номер точки"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Исх высота"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Исх полуразмах"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Стр высота"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Стр полуразмах"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Проектная высота"),0,wx.EXPAND)
-        gs.Add(wx.StaticText(panel, label = "Проектный полуразмах"),0,wx.EXPAND)
-
-        for i in range(len(RESULT)):
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].number}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].v_c}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].h_c}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].v_b_c}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].h_b_c}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].v_p_c}'),0,wx.EXPAND)
-                gs.Add(wx.StaticText(panel, label =  f' {RESULT[i].h_p_c}'),0,wx.EXPAND)
-
-        main_vertical_sizer.Add(gs, 1, flag = wx.EXPAND|wx.RIGHT|wx.LEFT|wx.TOP|wx.BOTTOM, border=5)
-
-        
-
-        footer_horizontal_sizer = wx.BoxSizer(wx.HORIZONTAL)
-
-
-        self.btn_calc = DXF_Button(panel, label='Экспортировать очертание в DXF файл', size=(300,30))
-        footer_horizontal_sizer.Add(self.btn_calc, 0, flag = wx.RIGHT|wx.LEFT|wx.TOP|wx.BOTTOM, border=10)
-        
-
-        self.btn_data = WordButton(panel, label='Экспортировать таблицу в Word файл', size = (300,30))
-        footer_horizontal_sizer.Add(self.btn_data, 0, flag = wx.RIGHT|wx.LEFT|wx.TOP|wx.BOTTOM, border=10)
-
-        main_vertical_sizer.Add(footer_horizontal_sizer, 0, flag = wx.EXPAND|wx.RIGHT|wx.LEFT|wx.TOP|wx.BOTTOM, border=5)
-
-        panel.SetSizer(main_vertical_sizer)
-
-
-        
-        
-
-
-
-    
-
-
-
+        panel = MyPanel(self)
 
